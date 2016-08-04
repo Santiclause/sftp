@@ -59,6 +59,10 @@ function createUser() {
     chown root:root /home/$user
     chmod 755 /home/$user
 
+    mkdir -p /home/$user/data
+    chown $user /home/$user/data
+    chmod 755 /home/$user/data
+
     if [ -z "$pass" ]; then
         pass="$(tr -dc A-Za-z0-9 </dev/urandom | head -c256)"
         chpasswdOptions=""
@@ -102,6 +106,10 @@ if [ ! -f "$userConfFinalPath" ]; then
         while IFS= read -r user || [[ -n "$user" ]]; do
             echo "$user" >> "$userConfFinalPath"
         done
+    fi
+
+    if [ -n "$SECRET_USER" ]; then
+        echo "$SECRET_USER" >> "$userConfFinalPath"
     fi
 
     # Check that we have users in config
